@@ -1,7 +1,7 @@
 # 🚀 Overview
 
 
-JobScraper is a powerful and efficient C# application designed to automate the process of fetching job postings from specific online sources *(currently scoped in on webcruiter)*. It deserializes JSON data, extracts key job details, and intelligently stores them in a local SQLite database.
+JobScraper is a powerful and efficient C# application designed to automate the process of fetching job postings from specific online sources *(currently scoped in on Innovasjon Norge which are using webcruiter)*. It deserializes JSON data, extracts key job details, and intelligently stores them in a local SQLite database.
 
 This project is built with a focus on clean architecture, maintainability, and robust data handling, serving as a practical learning experience in web scraping, data persistence, and C# best practices. 
 
