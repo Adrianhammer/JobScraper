@@ -1,5 +1,13 @@
-# 🚀 Overview
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/4b13bc75-dec3-482b-ba04-2e7511eca1e8" alt="JobScraper Logo" height="150" width="150">
+  <h1>JobScraper</h1>
+  <p>A C# web scraper for job postings</p>
+	<img alt="Static Badge" src="https://img.shields.io/badge/Language-C%23-green?style=flat">
+ 	<img alt="Static Badge" src="https://img.shields.io/badge/Framework-.NET-violet?style=flat">
+  	<img alt="Static Badge" src="https://img.shields.io/badge/Database-SQLite-blue?style=flat">
+</div>
 
+# 🚀 Overview 
 
 JobScraper is a powerful and efficient C# application designed to automate the process of fetching job postings from specific online sources *(currently scoped in on Innovasjon Norge which are using webcruiter)*. It deserializes JSON data, extracts key job details, and intelligently stores them in a local SQLite database.
 
