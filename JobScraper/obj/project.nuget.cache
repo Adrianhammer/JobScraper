@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "CpbQjN0E1pA=",
+  "success": true,
+  "projectFilePath": "/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/JobScraper.csproj",
+  "expectedPackageFiles": [
+    "/Users/adrianhammer/.nuget/packages/htmlagilitypack/1.12.1/htmlagilitypack.1.12.1.nupkg.sha512"
+  ],
+  "logs": []
+}
