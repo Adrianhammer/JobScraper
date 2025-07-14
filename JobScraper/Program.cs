@@ -14,10 +14,18 @@ namespace jobscraper
         public static async Task Main(string[] args)
         {
             string dbPath = "jobscraper.db";
-            
-            
-            
-            await JobController.RunJobFetch();
+
+            using (JobRepository jobrepo = new JobRepository(dbPath))
+            {
+                Console.WriteLine("Database and table setup complete. Starting job fetch...");
+                
+                List<JobResponseModels.Datum> scrapedJobs = await JobController.RunJobFetch();
+
+                foreach (var job in scrapedJobs)
+                {
+                    jobrepo.InsertJob(job);
+                }
+            }
         }
     }
 }

@@ -62,7 +62,29 @@ public class JobRepository : IDisposable
 
     public void InsertJob(JobResponseModels.Datum job)
     {
-        //todo
+        try
+        {
+            using (SqliteCommand command = _sqliteConn.CreateCommand())
+            {
+                command.CommandText = @"
+                INSERT INTO Jobs (id, company_name, heading, job_position,  published_date, application_deadline, workplace, open_advert_url)
+                VALUES (@id, @company_name, @heading, @job_position, @published_date, @application_deadline, @workplace, @open_advert_url);";
+                command.Parameters.AddWithValue("@id", job.Id);
+                command.Parameters.AddWithValue("@company_name", job.CompanyName);
+                command.Parameters.AddWithValue("@heading", job.Heading);
+                command.Parameters.AddWithValue("@job_position", job.HeadingNotOverruled);
+                command.Parameters.AddWithValue("@published_date", job.PublishedDate);
+                command.Parameters.AddWithValue("@application_deadline", job.ApplyWithinDate);
+                command.Parameters.AddWithValue("@workplace", job.Workplace);
+                command.Parameters.AddWithValue("@open_advert_url", job.OpenAdvertUrl);
+                command.ExecuteNonQuery();
+            }
+        }
+        catch (SqliteException ex)
+        {
+            Console.WriteLine($"Error inserting job: {ex.Message}");
+            throw;
+        }
     }
 
     public void Dispose()

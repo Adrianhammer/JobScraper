@@ -9,12 +9,12 @@ namespace JobScraper;
 
 public class JobController
 {
-    public static async Task RunJobFetch()
+    public static async Task<List<JobResponseModels.Datum>> RunJobFetch()
     {
         string docPath = "/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/json";
         var url = "https://candidate.webcruiter.com/api/odvert/companysearch/5864";
+        // payload the site needs to process job postings
         string requestPayload = "{Take: 20, skip: 0, page: 1, pageSize: 20, sort: [{field: '1', dir: 'desc'}]}";
-
         List<JobResponseModels.Datum> newlyScrapedJobs = new List<JobResponseModels.Datum>();
 
         using var httpClient = new HttpClient();
@@ -33,6 +33,7 @@ public class JobController
         
         JobResponseModels.Root? root = JsonSerializer.Deserialize<JobResponseModels.Root>(json);
 
+        // Adds to list so I can check newly fetched vs stored
         if (root?.Data != null)
         {
             foreach (var item in root.Data)
@@ -40,14 +41,7 @@ public class JobController
                 newlyScrapedJobs.Add(item);
             }
         }
-
-        foreach (var job in newlyScrapedJobs)
-        {
-            //Console.WriteLine($"ID: {job.Id}, Annonse: {job.Heading}, Stilling: {job.HeadingNotOverruled}, Publisert: {job.PublishedDate}, Søknadsfrist: {job.ApplyWithinDate}, Sted: {job.Workplace} ");
-        }
-
-        Console.WriteLine(newlyScrapedJobs.Count);
-
-       
+        return newlyScrapedJobs;
+        
     }
 }
