@@ -14,6 +14,9 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+# JetBreain IDEs
+.idea/
+
 # .NET Core
 project.lock.json
 project.fragment.lock.json
