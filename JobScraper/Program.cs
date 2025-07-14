@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text.Json;
 using JobScraper;
 
 namespace jobscraper

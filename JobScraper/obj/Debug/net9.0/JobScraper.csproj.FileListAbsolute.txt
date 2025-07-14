@@ -12,7 +12,4 @@
 /Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/obj/Debug/net9.0/JobScraper.pdb
 /Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/obj/Debug/net9.0/JobScraper.genruntimeconfig.cache
 /Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/obj/Debug/net9.0/ref/JobScraper.dll
-/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/bin/Debug/net9.0/HtmlAgilityPack.dll
-/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/obj/Debug/net9.0/JobScraper.csproj.AssemblyReference.cache
-/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/obj/Debug/net9.0/JobScraper.csproj.Up2Date
 /Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/obj/Debug/net9.0/JobScraper.sourcelink.json

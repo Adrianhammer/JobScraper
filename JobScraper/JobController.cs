@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text.Json;
 
 namespace JobScraper;
 
@@ -28,13 +29,26 @@ public class JobController
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
+        
+        JobResponseModels.Root? root = JsonSerializer.Deserialize<JobResponseModels.Root>(json);
 
+        foreach (var job in root.Data)
+        {
+            Console.WriteLine(job.CompanyName);
+            Console.WriteLine(job.Heading);
+            Console.WriteLine(job.HeadingNotOverruled);
+            Console.WriteLine(job.JobCategory);
+            Console.WriteLine("\n");
+        }
+
+        /*
         using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "result.json")))
         {
-            foreach (var line in json.Split("\r\n"))
+            foreach (var line in json.Split("\n"))
             {
                 outputFile.WriteLine(line);
             }
         }
+        */
     }
 }
