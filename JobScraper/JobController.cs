@@ -14,7 +14,9 @@ public class JobController
         string docPath = "/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/json";
         var url = "https://candidate.webcruiter.com/api/odvert/companysearch/5864";
         string requestPayload = "{Take: 20, skip: 0, page: 1, pageSize: 20, sort: [{field: '1', dir: 'desc'}]}";
-        
+
+        List<JobResponseModels.Datum> newlyScrapedJobs = new List<JobResponseModels.Datum>();
+
         using var httpClient = new HttpClient();
 
         var content = new StringContent(
@@ -31,26 +33,21 @@ public class JobController
         
         JobResponseModels.Root? root = JsonSerializer.Deserialize<JobResponseModels.Root>(json);
 
-        foreach (var job in root.Data)
+        if (root?.Data != null)
         {
-            Console.WriteLine(job.CompanyName);
-            Console.WriteLine(job.Heading);
-            Console.WriteLine(job.HeadingNotOverruled);
-            Console.WriteLine(job.JobCategory);
-            Console.WriteLine(job.PublishedDate);
-            Console.WriteLine(job.ApplyWithinDate);
-            Console.WriteLine(job.Workplace);
-            Console.WriteLine("\n");
-        }
-
-        /*
-        using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "result.json")))
-        {
-            foreach (var line in json.Split("\n"))
+            foreach (var item in root.Data)
             {
-                outputFile.WriteLine(line);
+                newlyScrapedJobs.Add(item);
             }
         }
-        */
+
+        foreach (var job in newlyScrapedJobs)
+        {
+            //Console.WriteLine($"ID: {job.Id}, Annonse: {job.Heading}, Stilling: {job.HeadingNotOverruled}, Publisert: {job.PublishedDate}, Søknadsfrist: {job.ApplyWithinDate}, Sted: {job.Workplace} ");
+        }
+
+        Console.WriteLine(newlyScrapedJobs.Count);
+
+       
     }
 }

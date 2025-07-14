@@ -13,6 +13,10 @@ namespace jobscraper
     {
         public static async Task Main(string[] args)
         {
+            string dbPath = "jobscraper.db";
+            
+            
+            
             await JobController.RunJobFetch();
         }
     }
