@@ -8,7 +8,7 @@ using JobScraper;
 
 namespace jobscraper
 {
-    
+
     public class Program
     {
         public static async Task Main(string[] args)
@@ -18,13 +18,17 @@ namespace jobscraper
             using (JobRepository jobrepo = new JobRepository(dbPath))
             {
                 Console.WriteLine("Database and table setup complete. Starting job fetch...");
-                
+
                 List<JobResponseModels.Datum> scrapedJobs = await JobController.RunJobFetch();
+
+
+                var retrivedJobs = jobrepo.GetJobs();
 
                 foreach (var job in scrapedJobs)
                 {
-                    jobrepo.InsertJob(job);
+                    jobrepo.InsertJob(job, retrivedJobs);
                 }
+
             }
         }
     }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,7 +62,43 @@ public class JobRepository : IDisposable
         }
     }
 
-    public void InsertJob(JobResponseModels.Datum job)
+    //Need to check if duplicates are in database
+    //If duplicate in database skip that item
+    //maybe loop over id´s in the Jobs table, and if ID is equal skip, if ID is not equal add values
+    //Maybe create own method for getting all the elements in database, call that before inserting and check for dupes
+
+    //Retrieve all jobs
+    //Return the items from the table, so I can use it in Insert job
+    public List<JobResponseModels.Datum> GetJobs()
+    {
+        List<JobResponseModels.Datum> GetStoredJobs = new List<JobResponseModels.Datum>();
+        
+        using (SqliteCommand command = _sqliteConn.CreateCommand())
+        {
+            command.CommandText = @"SELECT * FROM Jobs";
+            
+            using (SqliteDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    JobResponseModels.Datum job = new JobResponseModels.Datum();
+                    job.Id = reader.GetString("ID");
+                    job.CompanyName = reader.GetString("company_name");
+                    job.Heading = reader.GetString("heading");
+                    job.HeadingNotOverruled = reader.GetString("job_position");
+                    job.PublishedDate = reader.GetString("published_date");
+                    job.ApplyWithinDate = reader.GetString("application_deadline");
+                    job.Workplace = reader.GetString("workplace");
+                    job.OpenAdvertUrl = reader.GetString("open_advert_url");
+                    GetStoredJobs.Add(job);
+                }
+            }
+        }
+        return GetStoredJobs;
+    }
+    
+    
+    public void InsertJob(JobResponseModels.Datum job, List<JobResponseModels.Datum> Jobs)
     {
         try
         {
@@ -78,7 +116,7 @@ public class JobRepository : IDisposable
                 command.Parameters.AddWithValue("@workplace", job.Workplace);
                 command.Parameters.AddWithValue("@open_advert_url", job.OpenAdvertUrl);
                 command.ExecuteNonQuery();
-            }
+            } 
         }
         catch (SqliteException ex)
         {
