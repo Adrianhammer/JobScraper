@@ -33,7 +33,7 @@ public class JobController
         
         JobResponseModels.Root? root = JsonSerializer.Deserialize<JobResponseModels.Root>(json);
 
-        // Adds to list so I can check newly fetched vs stored
+        // Adds to list, so I can check newly fetched vs stored
         if (root?.Data != null)
         {
             foreach (var item in root.Data)
@@ -42,6 +42,5 @@ public class JobController
             }
         }
         return newlyScrapedJobs;
-        
     }
 }

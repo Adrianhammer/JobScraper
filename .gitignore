@@ -17,6 +17,12 @@ bld/
 # JetBreain IDEs
 .idea/
 
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
 # .NET Core
 project.lock.json
 project.fragment.lock.json

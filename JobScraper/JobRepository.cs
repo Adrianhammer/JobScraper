@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 
 namespace JobScraper;
@@ -61,17 +55,11 @@ public class JobRepository : IDisposable
             }
         }
     }
-
-    //Need to check if duplicates are in database
-    //If duplicate in database skip that item
-    //maybe loop over id´s in the Jobs table, and if ID is equal skip, if ID is not equal add values
-    //Maybe create own method for getting all the elements in database, call that before inserting and check for dupes
-
-    //Retrieve all jobs
-    //Return the items from the table, so I can use it in Insert job
+    
+    //To be used later for notifying etc.
     public List<JobResponseModels.Datum> GetJobs()
     {
-        List<JobResponseModels.Datum> GetStoredJobs = new List<JobResponseModels.Datum>();
+        List<JobResponseModels.Datum> getStoredJobs = new List<JobResponseModels.Datum>();
         
         using (SqliteCommand command = _sqliteConn.CreateCommand())
         {
@@ -90,15 +78,14 @@ public class JobRepository : IDisposable
                     job.ApplyWithinDate = reader.GetString("application_deadline");
                     job.Workplace = reader.GetString("workplace");
                     job.OpenAdvertUrl = reader.GetString("open_advert_url");
-                    GetStoredJobs.Add(job);
+                    getStoredJobs.Add(job);
                 }
             }
         }
-        return GetStoredJobs;
+        return getStoredJobs;
     }
     
-    
-    public void InsertJob(JobResponseModels.Datum job, List<JobResponseModels.Datum> Jobs)
+    public void InsertJob(JobResponseModels.Datum job, List<JobResponseModels.Datum> jobs)
     {
         try
         {
@@ -124,10 +111,55 @@ public class JobRepository : IDisposable
             throw;
         }
     }
+    
+    //Create method that compares the newly retrieved job postings (JobController.newlyScrapedJobs list) to what is stored in the database (JobRepository.getStoredJobs list)
+    //A method that compares list items
+    //Method needs two list parameters for the two lists
+    //Create a list that will hold the job postings that do not exist
+    //If a list item has equal newjobs.ID -> do not add that item to the list -> go to next item -> check again -> if it has not equal newjobs.ID -> add item to the list
+    //After a loop is run that checks for equality between the lists, and the job postings are added
+    //Insert those job postings to the database by calling InsertJob() method sending the newly created list as a param (List<JobResponseModels.Datum> jobs)
+
+    public void UpsertJob(List<JobResponseModels.Datum> newJobs, List<JobResponseModels.Datum> storedJobs)
+    {
+        int i = 0;
+        List<JobResponseModels.Datum> checkedJobs = new List<JobResponseModels.Datum>();
+
+        try
+        {
+            foreach (JobResponseModels.Datum newJob in newJobs)
+            {
+                if (newJob.Id.Contains(storedJobs[i].Id))
+                {
+                    Console.WriteLine($"New job {newJob.Id} already exists");
+                    i++;
+                }
+                else
+                {
+                    Console.WriteLine($"New job {newJob.Id} added");
+                    checkedJobs.Add(newJob);
+                }
+            }
+            InsertJob();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
+        //testing to see what is in thew checkJobs list
+        int j = 1;
+        foreach (var checkedJob in checkedJobs)
+        {
+            Console.WriteLine($"checkedJobs list item {j}: {checkedJob.Id}");
+            j++;
+        }
+    }
 
     public void Dispose()
     {
-        if (_sqliteConn != null && _sqliteConn.State == System.Data.ConnectionState.Open)
+        if (_sqliteConn != null && _sqliteConn.State == ConnectionState.Open)
         {
             Console.WriteLine("Closing SQLite connection");
             _sqliteConn.Close();
