@@ -25,12 +25,6 @@ namespace jobscraper
                 
                 jobrepo.UpsertJob(scrapedJobs, jobrepo.GetJobs());
                 
-                
-                foreach (var job in scrapedJobs)
-                {
-                    //newlyScrapedJobs, getStoredJobs
-                    jobrepo.InsertJob(job, retrievedJobs);
-                }
             }
         }
     }

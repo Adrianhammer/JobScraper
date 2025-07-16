@@ -84,8 +84,9 @@ public class JobRepository : IDisposable
         }
         return getStoredJobs;
     }
-    
-    public void InsertJob(JobResponseModels.Datum job, List<JobResponseModels.Datum> jobs)
+    //Gammel metode start:
+    //public void InsertJob(JobResponseModels.Datum job, List<JobResponseModels.Datum> jobs)
+    public void InsertJob(List<JobResponseModels.Datum> job)
     {
         try
         {
@@ -94,14 +95,14 @@ public class JobRepository : IDisposable
                 command.CommandText = @"
                 INSERT INTO Jobs (id, company_name, heading, job_position,  published_date, application_deadline, workplace, open_advert_url)
                 VALUES (@id, @company_name, @heading, @job_position, @published_date, @application_deadline, @workplace, @open_advert_url);";
-                command.Parameters.AddWithValue("@id", job.Id);
-                command.Parameters.AddWithValue("@company_name", job.CompanyName);
-                command.Parameters.AddWithValue("@heading", job.Heading);
-                command.Parameters.AddWithValue("@job_position", job.HeadingNotOverruled);
-                command.Parameters.AddWithValue("@published_date", job.PublishedDate);
-                command.Parameters.AddWithValue("@application_deadline", job.ApplyWithinDate);
-                command.Parameters.AddWithValue("@workplace", job.Workplace);
-                command.Parameters.AddWithValue("@open_advert_url", job.OpenAdvertUrl);
+                command.Parameters.AddWithValue("@id", job[i]);
+                command.Parameters.AddWithValue("@company_name", job[i].CompanyName);
+                command.Parameters.AddWithValue("@heading", job[i].Heading);
+                command.Parameters.AddWithValue("@job_position", job[i].HeadingNotOverruled);
+                command.Parameters.AddWithValue("@published_date", job[i].PublishedDate);
+                command.Parameters.AddWithValue("@application_deadline", job[i].ApplyWithinDate);
+                command.Parameters.AddWithValue("@workplace", job[i].Workplace);
+                command.Parameters.AddWithValue("@open_advert_url", job[i].OpenAdvertUrl);
                 command.ExecuteNonQuery();
             } 
         }
@@ -140,20 +141,20 @@ public class JobRepository : IDisposable
                     checkedJobs.Add(newJob);
                 }
             }
-            InsertJob();
+
+            if (checkedJobs.Count > 0)
+            {
+                InsertJob(checkedJobs);
+            }
+            else
+            {
+                Console.WriteLine($"No new jobs found {checkedJobs.Count}");
+            }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
-        }
-        
-        //testing to see what is in thew checkJobs list
-        int j = 1;
-        foreach (var checkedJob in checkedJobs)
-        {
-            Console.WriteLine($"checkedJobs list item {j}: {checkedJob.Id}");
-            j++;
         }
     }
 
