@@ -21,9 +21,9 @@ namespace jobscraper
 
                 List<JobResponseModels.Datum> scrapedJobs = await JobController.RunJobFetch();
 
-                var retrievedJobs = jobrepo.GetJobs();
+                var existingJobsInDb = jobrepo.GetJobs();
                 
-                jobrepo.UpsertJob(scrapedJobs, jobrepo.GetJobs());
+                jobrepo.UpsertJob(scrapedJobs, existingJobsInDb);
                 
             }
         }

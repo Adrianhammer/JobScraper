@@ -59,7 +59,7 @@ public class JobRepository : IDisposable
     //To be used later for notifying etc.
     public List<JobResponseModels.Datum> GetJobs()
     {
-        List<JobResponseModels.Datum> getStoredJobs = new List<JobResponseModels.Datum>();
+        List<JobResponseModels.Datum> allStoredJobs = new List<JobResponseModels.Datum>();
         
         using (SqliteCommand command = _sqliteConn.CreateCommand())
         {
@@ -78,15 +78,15 @@ public class JobRepository : IDisposable
                     job.ApplyWithinDate = reader.GetString("application_deadline");
                     job.Workplace = reader.GetString("workplace");
                     job.OpenAdvertUrl = reader.GetString("open_advert_url");
-                    getStoredJobs.Add(job);
+                    allStoredJobs.Add(job);
                 }
             }
         }
-        return getStoredJobs;
+        return allStoredJobs;
     }
     //Gammel metode start:
     //public void InsertJob(JobResponseModels.Datum job, List<JobResponseModels.Datum> jobs)
-    public void InsertJob(List<JobResponseModels.Datum> job)
+    public void InsertJob(JobResponseModels.Datum job)
     {
         try
         {
@@ -95,14 +95,14 @@ public class JobRepository : IDisposable
                 command.CommandText = @"
                 INSERT INTO Jobs (id, company_name, heading, job_position,  published_date, application_deadline, workplace, open_advert_url)
                 VALUES (@id, @company_name, @heading, @job_position, @published_date, @application_deadline, @workplace, @open_advert_url);";
-                command.Parameters.AddWithValue("@id", job[i]);
-                command.Parameters.AddWithValue("@company_name", job[i].CompanyName);
-                command.Parameters.AddWithValue("@heading", job[i].Heading);
-                command.Parameters.AddWithValue("@job_position", job[i].HeadingNotOverruled);
-                command.Parameters.AddWithValue("@published_date", job[i].PublishedDate);
-                command.Parameters.AddWithValue("@application_deadline", job[i].ApplyWithinDate);
-                command.Parameters.AddWithValue("@workplace", job[i].Workplace);
-                command.Parameters.AddWithValue("@open_advert_url", job[i].OpenAdvertUrl);
+                command.Parameters.AddWithValue("@id", job.Id);
+                command.Parameters.AddWithValue("@company_name", job.CompanyName);
+                command.Parameters.AddWithValue("@heading", job.Heading);
+                command.Parameters.AddWithValue("@job_position", job.HeadingNotOverruled);
+                command.Parameters.AddWithValue("@published_date", job.PublishedDate);
+                command.Parameters.AddWithValue("@application_deadline", job.ApplyWithinDate);
+                command.Parameters.AddWithValue("@workplace", job.Workplace);
+                command.Parameters.AddWithValue("@open_advert_url", job.OpenAdvertUrl);
                 command.ExecuteNonQuery();
             } 
         }
@@ -113,42 +113,49 @@ public class JobRepository : IDisposable
         }
     }
     
-    //Create method that compares the newly retrieved job postings (JobController.newlyScrapedJobs list) to what is stored in the database (JobRepository.getStoredJobs list)
-    //A method that compares list items
-    //Method needs two list parameters for the two lists
-    //Create a list that will hold the job postings that do not exist
-    //If a list item has equal newjobs.ID -> do not add that item to the list -> go to next item -> check again -> if it has not equal newjobs.ID -> add item to the list
-    //After a loop is run that checks for equality between the lists, and the job postings are added
-    //Insert those job postings to the database by calling InsertJob() method sending the newly created list as a param (List<JobResponseModels.Datum> jobs)
-
     public void UpsertJob(List<JobResponseModels.Datum> newJobs, List<JobResponseModels.Datum> storedJobs)
     {
-        int i = 0;
-        List<JobResponseModels.Datum> checkedJobs = new List<JobResponseModels.Datum>();
-
+        List<JobResponseModels.Datum> jobsToInsert = new List<JobResponseModels.Datum>();
         try
         {
             foreach (JobResponseModels.Datum newJob in newJobs)
             {
-                if (newJob.Id.Contains(storedJobs[i].Id))
+                if (newJob.Id == storedJobsSet.Contains(newJob.Id))
                 {
                     Console.WriteLine($"New job {newJob.Id} already exists");
-                    i++;
                 }
                 else
                 {
                     Console.WriteLine($"New job {newJob.Id} added");
-                    checkedJobs.Add(newJob);
+                    jobsToInsert.Add(newJob);
                 }
             }
 
-            if (checkedJobs.Count > 0)
+            if (jobsToInsert.Count > 0)
             {
-                InsertJob(checkedJobs);
+                InsertJob(jobsToInsert);
             }
             else
             {
-                Console.WriteLine($"No new jobs found {checkedJobs.Count}");
+                Console.WriteLine($"No new jobs found {jobsToInsert.Count}");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public bool JobExists(string jobId)
+    {
+        try
+        {
+            using (SqliteCommand command = _sqliteConn.CreateCommand())
+            {
+                command.CommandText = @"SELECT COUNT(*) FROM Jobs WHERE id = @jobId";
+                long id = (long) command.ExecuteScalar();
+                return id > 0;
             }
         }
         catch (Exception e)
