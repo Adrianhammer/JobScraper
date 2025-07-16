@@ -20,10 +20,8 @@ namespace jobscraper
                 Console.WriteLine("Database and table setup complete. Starting job fetch...");
 
                 List<JobResponseModels.Datum> scrapedJobs = await JobController.RunJobFetch();
-
-                var existingJobsInDb = jobrepo.GetJobs();
                 
-                jobrepo.UpsertJob(scrapedJobs, existingJobsInDb);
+                jobrepo.UpsertJob(scrapedJobs);
                 
             }
         }

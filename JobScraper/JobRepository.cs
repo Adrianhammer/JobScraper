@@ -113,31 +113,16 @@ public class JobRepository : IDisposable
         }
     }
     
-    public void UpsertJob(List<JobResponseModels.Datum> newJobs, List<JobResponseModels.Datum> storedJobs)
+    public void UpsertJob(List<JobResponseModels.Datum> scrapedJobs)
     {
-        List<JobResponseModels.Datum> jobsToInsert = new List<JobResponseModels.Datum>();
         try
         {
-            foreach (JobResponseModels.Datum newJob in newJobs)
+            foreach (JobResponseModels.Datum job in scrapedJobs)
             {
-                if (newJob.Id == storedJobsSet.Contains(newJob.Id))
+                if (JobExists(job.Id) == false)
                 {
-                    Console.WriteLine($"New job {newJob.Id} already exists");
+                    InsertJob(job);
                 }
-                else
-                {
-                    Console.WriteLine($"New job {newJob.Id} added");
-                    jobsToInsert.Add(newJob);
-                }
-            }
-
-            if (jobsToInsert.Count > 0)
-            {
-                InsertJob(jobsToInsert);
-            }
-            else
-            {
-                Console.WriteLine($"No new jobs found {jobsToInsert.Count}");
             }
         }
         catch (Exception e)
@@ -154,6 +139,7 @@ public class JobRepository : IDisposable
             using (SqliteCommand command = _sqliteConn.CreateCommand())
             {
                 command.CommandText = @"SELECT COUNT(*) FROM Jobs WHERE id = @jobId";
+                command.Parameters.AddWithValue("@jobId", jobId);
                 long id = (long) command.ExecuteScalar();
                 return id > 0;
             }
