@@ -121,6 +121,7 @@ public class JobRepository : IDisposable
             {
                 if (JobExists(job.Id) == false)
                 {
+                    Console.WriteLine($"Added job: {job.HeadingNotOverruled}");
                     InsertJob(job);
                 }
             }
