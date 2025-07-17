@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
 
 namespace JobScraper;
@@ -23,10 +24,10 @@ public class JobAlert
         );
         
     }
-
-    public void SendNewJobAlert(List<JobResponseModels.Datum> jobsToNotifyUser)
+    //Will have this as method just having no param for test
+    //public async Task SendNewJobAlert(List<JobResponseModels.Datum> jobsToNotifyUser)
+    public async Task SendNewJobAlert()
     {
-
         var phoneNumber = _configuration["SmsSettings:RecipientNumber"];
         
         var messages = new
@@ -35,5 +36,28 @@ public class JobAlert
             message = "Test",
             recipients = new[] { new { msisdn = phoneNumber } },
         };
+
+        using var resp = await _httpClient.PostAsync(
+            "https://gatewayapi.com/rest/mtsms",
+            JsonContent.Create(messages)
+        );
+        
+        // On 2xx, print the SMS ID´s received back from the API
+        // otherwise print the response content to see the error:
+        if (resp.IsSuccessStatusCode && resp.Content != null)
+        {
+            Console.WriteLine("success!");
+            var content = await resp.Content.ReadFromJsonAsync<Dictionary<string, dynamic>>();
+            foreach (var smsId in content["ids"].EnumerateArray())
+            {
+                Console.WriteLine("allocated SMS id: {0:G}", smsId);
+            }
+        } 
+        else if (resp.Content != null) 
+        {
+            Console.WriteLine("failed :(\nresponse content:");
+            var content = await resp.Content.ReadAsStringAsync();
+            Console.WriteLine(content);
+        }
     }
 }

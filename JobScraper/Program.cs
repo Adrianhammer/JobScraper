@@ -6,6 +6,7 @@ using System.IO;
 using System.Text.Json;
 using JobScraper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
 namespace jobscraper
 {
@@ -18,6 +19,7 @@ namespace jobscraper
             
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
+                //Will crash if appsettings.json is not found and won´t reload if file is changed after startup
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                 .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: false)
                 .AddEnvironmentVariables()
@@ -34,6 +36,8 @@ namespace jobscraper
                 jobrepo.UpsertJob(scrapedJobs);
                 
             }
+            
+            await alert.SendNewJobAlert();
         }
     }
 }
