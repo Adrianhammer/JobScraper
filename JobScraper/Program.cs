@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
 namespace jobscraper
 {
-
     public class Program
     {
         public static async Task Main(string[] args)
@@ -32,12 +31,10 @@ namespace jobscraper
                 Console.WriteLine("Database and table setup complete. Starting job fetch...");
 
                 List<JobResponseModels.Datum> scrapedJobs = await JobController.RunJobFetch();
-                
-                jobrepo.UpsertJob(scrapedJobs);
-                
+
+                var newlyInsertedJobs = jobrepo.UpsertJob(scrapedJobs);
+                await alert.SendNewJobAlert(newlyInsertedJobs);
             }
-            
-            await alert.SendNewJobAlert();
         }
     }
 }
