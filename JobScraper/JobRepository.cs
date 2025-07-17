@@ -84,8 +84,7 @@ public class JobRepository : IDisposable
         }
         return allStoredJobs;
     }
-    //Gammel metode start:
-    //public void InsertJob(JobResponseModels.Datum job, List<JobResponseModels.Datum> jobs)
+    
     public void InsertJob(JobResponseModels.Datum job)
     {
         try
@@ -113,8 +112,10 @@ public class JobRepository : IDisposable
         }
     }
     
-    public void UpsertJob(List<JobResponseModels.Datum> scrapedJobs)
+    public List<JobResponseModels.Datum> UpsertJob(List<JobResponseModels.Datum> scrapedJobs)
     {
+        List<JobResponseModels.Datum> jobsToNotifyUser = new List<JobResponseModels.Datum>();
+        
         try
         {
             foreach (JobResponseModels.Datum job in scrapedJobs)
@@ -123,6 +124,7 @@ public class JobRepository : IDisposable
                 {
                     Console.WriteLine($"Added job: {job.HeadingNotOverruled}");
                     InsertJob(job);
+                    jobsToNotifyUser.Add(job);
                 }
             }
         }
@@ -131,6 +133,8 @@ public class JobRepository : IDisposable
             Console.WriteLine(e);
             throw;
         }
+        
+        return jobsToNotifyUser;
     }
 
     public bool JobExists(string jobId)
