@@ -2,22 +2,22 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
+using System.Threading.Tasks;
 
 namespace JobScraper;
 
 public class JobAlert
 {
     private readonly IConfiguration _configuration;
-    private static readonly HttpClient _httpClient = new HttpClient();
-
     public JobAlert(IConfiguration configuration)
     {
         _configuration = configuration;
 
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            "Token",
-            _configuration["SmsSettings:ApiToken"]
-        );
+        var accountSid = _configuration["SmsSettings:AccountSID"];
+        var authToken = _configuration["SmsSettings:AuthToken"];
+        TwilioClient.Init(accountSid, authToken);
 
     }
 
@@ -28,7 +28,8 @@ public class JobAlert
             Console.WriteLine("No new jobs to notify about!");
             return;
         }
-            var phoneNumber = _configuration["SmsSettings:RecipientNumber"];
+            var recipientNumber = _configuration["SmsSettings:RecipientNumber"];
+            var senderNumber = _configuration["SmsSettings:SenderNumber"];
             StringBuilder sb = new StringBuilder("New job postings:\n", jobsToNotifyUser.Count);
 
             foreach (var job in jobsToNotifyUser)
@@ -36,34 +37,22 @@ public class JobAlert
                 sb.Append($"- {job.HeadingNotOverruled} \n");
             }
 
-            var messages = new
-            {
-                sender = _configuration["SmsSettings:Sender"],
-                message = sb.ToString(),
-                recipients = new[] { new { msisdn = phoneNumber } },
-            };
-
-            using var resp = await _httpClient.PostAsync(
-                "https://gatewayapi.com/rest/mtsms",
-                JsonContent.Create(messages)
+            var message = await MessageResource.CreateAsync(
+                body:  sb.ToString(),
+                from: new Twilio.Types.PhoneNumber(senderNumber),
+                to: new Twilio.Types.PhoneNumber(recipientNumber)
             );
-
-            // On 2xx, print the SMS ID´s received back from the API
-            // otherwise print the response content to see the error:
-            if (resp.IsSuccessStatusCode && resp.Content != null)
+            
+            if (message.Status == MessageResource.StatusEnum.Queued ||
+                message.Status == MessageResource.StatusEnum.Sending || 
+                message.Status == MessageResource.StatusEnum.Sent ||
+                message.Status == MessageResource.StatusEnum.Delivered)
             {
-                Console.WriteLine("success!");
-                var content = await resp.Content.ReadFromJsonAsync<Dictionary<string, dynamic>>();
-                foreach (var smsId in content["ids"].EnumerateArray())
-                {
-                    Console.WriteLine("allocated SMS id: {0:G}", smsId);
-                }
+                Console.WriteLine($"WhatsApp/SMS message sent successfully! SID: {message.Sid}, Status: {message.Status}");
             }
-            else if (resp.Content != null)
+            else
             {
-                Console.WriteLine("failed :(\nresponse content:");
-                var content = await resp.Content.ReadAsStringAsync();
-                Console.WriteLine(content);
+                Console.WriteLine($"Message sending failed or is in an unexpected status. SID: {message.Sid}, Status: {message.Status}, Error Code: {message.ErrorCode}, Error Message: {message.ErrorMessage}");
             }
     }
 }
