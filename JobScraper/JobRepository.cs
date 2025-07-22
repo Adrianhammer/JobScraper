@@ -1,11 +1,13 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
+using Npgsql;
 
 namespace JobScraper;
 
 public class JobRepository : IDisposable
 {
     private readonly SqliteConnection _sqliteConn;
+    private readonly NpgsqlConnection _pgConn;
 
     public JobRepository(string databasePath)
     {
