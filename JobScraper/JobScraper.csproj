@@ -5,13 +5,15 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-    </PropertyGroup>
+      <UserSecretsId>a09afcd1-7fb0-4bd0-bbe7-475ba5869cb1</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0-preview.5.25277.114" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0-preview.6.25358.103" />
       <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.0-preview.6.25358.103" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0-preview.6.25358.103" />
+      <PackageReference Include="Npgsql" Version="9.0.3" />
       <PackageReference Include="Twilio" Version="7.11.5" />
     </ItemGroup>
 
