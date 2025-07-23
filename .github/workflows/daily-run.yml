@@ -22,8 +22,7 @@ jobs:
           dotnet-version: '9.0'
 
       - name: Restore & Build
-        run: dotnet build JobScraper.sln \ 
-              --configuration Release
+        run: dotnet build JobScraper.sln --configuration Release
 
       - name: Run scraper
         env: 
@@ -32,7 +31,6 @@ jobs:
           SmsSettings__AuthToken:             ${{ secrets.AUTHTOKEN }}
           SmsSettings__SenderNumber:          ${{ secrets.SENDERNUMBER }}
           SmsSettings__RecipientNumber:       ${{ secrets.RECIPIENTNUMBER }}
-        run: dotnet run --project JobScraper/JobScraper.csproj \
-              --configuration Release
+        run: dotnet run --project JobScraper/JobScraper.csproj --configuration Release
       
       
