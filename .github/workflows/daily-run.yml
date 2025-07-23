@@ -3,9 +3,11 @@ name: Daily run
 on: 
   schedule:
     # 11:00 UTC = 12:00 CET (winter)
-    - cron: '0 11 * 10-3 *'  # October–March
-    # 10:00 UTC = 12:00 CEST (summer)
-    - cron: '0 10 * 4-9 *'   # April–September
+        # Summer time (CEST = UTC+2): 10:00 UTC
+    - cron: '0 10 * 4-10 *'  # April–October inclusive
+
+    # Winter time (CET = UTC+1): 11:00 UTC
+    - cron: '0 11 * 1-3,11,12 *'  # January–March + November–December
   workflow_dispatch:
 
 jobs:
