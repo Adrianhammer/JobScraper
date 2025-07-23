@@ -4,14 +4,12 @@
   <p>A C# web scraper for job postings</p>
 	<img alt="Static Badge" src="https://img.shields.io/badge/Language-C%23-green?style=flat">
  	<img alt="Static Badge" src="https://img.shields.io/badge/Framework-.NET-violet?style=flat">
-  	<img alt="Static Badge" src="https://img.shields.io/badge/Database-SQLite-blue?style=flat">
+  	<img alt="Static Badge" src="https://img.shields.io/badge/Database-Supabase-white?style=flat">
 </div>
 
 # 🚀 Overview 
 
-JobScraper is a powerful and efficient C# application designed to automate the process of fetching job postings from specific online sources *(currently scoped in on Innovasjon Norge which are using webcruiter)*. It deserializes JSON data, extracts key job details, and intelligently stores them in a local SQLite database.
-
-This project is built with a focus on clean architecture, maintainability, and robust data handling, serving as a practical learning experience in web scraping, data persistence, and C# best practices. 
+JobScraper is a powerful and efficient C# application designed to automate the process of fetching job postings from specific online sources *(currently scoped in on Innovasjon Norge which are using webcruiter)*. It deserializes JSON data, extracts key job details, and intelligently stores them in a PostgreSQL database.
 
 **Please note: This project is currently under active development, and more exciting features are planned!**
 
@@ -19,19 +17,17 @@ This project is built with a focus on clean architecture, maintainability, and r
 
 - Targeted Web Scraping: Fetches job posting data from specified API endpoints.
 - JSON Deserialization: Converts raw JSON responses into structured C# objects (JobResponseModels.Datum).
-- Local Data Persistence: Stores job details in a lightweight SQLite database.
+- Data Persistence: Stores job details in a Supabase-hosted PostgreSQL database.
 - Foundational Data Handling: Establishes the core for future capabilities:
 	- Detecting new job postings.
 	- Identifying updates to existing job postings.
 	- Tracking job application deadlines.
+- Runs at 12:00 every day to check for new postings (This will be tweaked)
 
 
 # 🛠️ Technologies Used
-- Language: C# 
-- Framework: .NET (9.0)
-- Database: SQLite
-  
-<img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/csharp-original.svg" alt="C#" height="50" /> <img style="margin: 10px" src="https://github.com/dotnet/brand/blob/main/logo/dotnet-logo.svg" alt=".NET" height="50" /> <img style="margin: 10px" src="https://github.com/Adrianhammer/HabitTracker/blob/master/HabitTracker/Assets/sqlite-ar21.svg" alt="SqLite" height="50" /> 
+[![](https://bentos.jkominovic.dev/api/v1/generic-card?icon=sidotnet&size=square)](https://bentos.jkominovic.dev/api/v1/generic-card?icon=sidotnet&size=square)
+[![](https://bentos.jkominovic.dev/api/v1/generic-card?icon=siSupabase&size=square)](https://bentos.jkominovic.dev/api/v1/generic-card?icon=siSupabase&size=square)
 
 # 📦 Getting Started (experimental)
 
