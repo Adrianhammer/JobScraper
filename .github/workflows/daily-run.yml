@@ -22,7 +22,7 @@ jobs:
           dotnet-version: '9.0'
 
       - name: Restore & Build
-        run: dotnet build ./JobScraper.csproj --configuration Release
+        run: dotnet build ./JobScraper/JobScraper.csproj --configuration Release
 
       - name: Run scraper
         env: 
