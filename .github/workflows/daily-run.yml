@@ -1,0 +1,34 @@
+name: Daily run
+
+on: 
+  schedule:
+    # 11:00 UTC = 12:00 CET (winter)
+    - cron: '0 11 * 10-3 *'  # October–March
+    # 10:00 UTC = 12:00 CEST (summer)
+    - cron: '0 10 * 4-9 *'   # April–September
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0'
+
+      - name: Restore & Build
+        run: dotnet build ./JobScraper.csproj --configuration Release
+
+      - name: Run scraper
+        env: 
+          ConnectionStrings__DefaultConnection: ${{ secrets.DEFAULT_CONNECTION }}
+          SmsSettings__AccountSID:            ${{ secrets.ACCOUNTSID }}
+          SmsSettings__AuthToken:             ${{ secrets.AUTHTOKEN }}
+          SmsSettings__SenderNumber:          ${{ secrets.SENDERNUMBER }}
+          SmsSettings__RecipientNumber:       ${{ secrets.RECIPIENTNUMBER }}
+        run: dotnet run --project ./JobScraper.csproj --configuration Release
+      
+      
