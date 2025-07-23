@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: List repository files
+        run: ls -R .
+
       - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '9.0'
