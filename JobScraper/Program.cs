@@ -14,27 +14,24 @@ namespace jobscraper
     {
         public static async Task Main(string[] args)
         {
-            string dbPath = "jobscraper.db";
-            
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                //Will crash if appsettings.json is not found and won´t reload if file is changed after startup
+                //Will crash if appsettings.json is not found and won't reload if the file is changed after startup
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                 .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: false)
+                .AddUserSecrets<Program>()
                 .AddEnvironmentVariables()
                 .Build();
 
             var alert = new JobAlert(configuration);
 
-            using (JobRepository jobrepo = new JobRepository(dbPath))
-            {
-                Console.WriteLine("Database and table setup complete. Starting job fetch...");
+            using var jobrepo = new JobRepository(configuration);
+            Console.WriteLine("Database and table setup complete. Starting job fetch...");
 
-                List<JobResponseModels.Datum> scrapedJobs = await JobController.RunJobFetch();
+            List<JobResponseModels.Datum> scrapedJobs = await JobController.RunJobFetch();
 
-                var newlyInsertedJobs = jobrepo.UpsertJob(scrapedJobs);
-                await alert.SendNewJobAlert(newlyInsertedJobs);
-            }
+            var newlyInsertedJobs = jobrepo.UpsertJob(scrapedJobs);
+            await alert.SendNewJobAlert(newlyInsertedJobs);
         }
     }
 }
