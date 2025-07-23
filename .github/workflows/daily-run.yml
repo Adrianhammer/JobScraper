@@ -17,9 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: List repository files
-        run: ls -R .
-
       - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '9.0'
@@ -34,6 +31,6 @@ jobs:
           SmsSettings__AuthToken:             ${{ secrets.AUTHTOKEN }}
           SmsSettings__SenderNumber:          ${{ secrets.SENDERNUMBER }}
           SmsSettings__RecipientNumber:       ${{ secrets.RECIPIENTNUMBER }}
-        run: dotnet run --project ./JobScraper.csproj --configuration Release
+        run: dotnet run --project ./JobScraper/JobScraper.csproj --configuration Release
       
       
