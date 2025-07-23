@@ -17,7 +17,7 @@ namespace jobscraper
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 //Will crash if appsettings.json is not found and won't reload if the file is changed after startup
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
                 .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: false)
                 .AddUserSecrets<Program>()
                 .AddEnvironmentVariables()
