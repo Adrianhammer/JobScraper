@@ -19,7 +19,6 @@ public class JobRepository : IDisposable
         {
             _pgConn.Open();
             Console.WriteLine("Supabase PostgreSQL connection established");
-            CreateTable();
         }
         catch (NpgsqlException ex)
         {
@@ -31,32 +30,6 @@ public class JobRepository : IDisposable
             Console.WriteLine($"Unexpected error: {ex.Message}");
             throw;
         }
-    }
-
-    private void CreateTable()
-    {
-        using var command = _pgConn.CreateCommand();
-        command.CommandText = @"
-                CREATE TABLE IF NOT EXISTS Jobs (
-                  id text PRIMARY KEY NOT NULL,
-                  company_name text,
-                  heading text,
-                  job_position text,
-                  published_date text,
-                  application_deadline text,
-                  workplace text,
-                  open_advert_url text
-                );";
-            try
-            {
-                command.ExecuteNonQuery();
-                Console.WriteLine("Jobs table created successfully or already exists");
-            }
-            catch (NpgsqlException ex)
-            {
-                Console.WriteLine($"Error creating Jobs table: {ex.Message}");
-                throw;
-            }
     }
     
     public List<JobResponseModels.Datum> GetJobs()
@@ -94,15 +67,16 @@ public class JobRepository : IDisposable
             
             command.CommandText = @"
             INSERT INTO Jobs (id, company_name, heading, job_position,  published_date, application_deadline, workplace, open_advert_url)
-            VALUES (@id, @company_name, @heading, @job_position, @published_date, @application_deadline, @workplace, @open_advert_url);";
+            VALUES (:id, :company_name, :heading, :job_position, :published_date, :application_deadline, :workplace, :open_advert_url);";
             
-            command.Parameters.AddWithValue("@id", job.Id);
-            command.Parameters.AddWithValue("@company_name", job.CompanyName);
-            command.Parameters.AddWithValue("@heading", job.Heading);
-            command.Parameters.AddWithValue("@job_position", (object?)job.HeadingNotOverruled ?? DBNull.Value);            command.Parameters.AddWithValue("@published_date", job.PublishedDate);
-            command.Parameters.AddWithValue("@application_deadline", job.ApplyWithinDate);
-            command.Parameters.AddWithValue("@workplace", job.Workplace);
-            command.Parameters.AddWithValue("@open_advert_url", job.OpenAdvertUrl);
+            command.Parameters.AddWithValue("id", job.Id);
+            command.Parameters.AddWithValue("company_name", job.CompanyName);
+            command.Parameters.AddWithValue("heading", job.Heading);
+            command.Parameters.AddWithValue("job_position", (object?)job.HeadingNotOverruled ?? DBNull.Value);            
+            command.Parameters.AddWithValue("published_date", job.PublishedDate);
+            command.Parameters.AddWithValue("application_deadline", job.ApplyWithinDate);
+            command.Parameters.AddWithValue("workplace", job.Workplace);
+            command.Parameters.AddWithValue("open_advert_url", job.OpenAdvertUrl);
             
             command.ExecuteNonQuery();
         }
@@ -143,7 +117,7 @@ public class JobRepository : IDisposable
         try
         {
             using var command = _pgConn.CreateCommand();
-            command.CommandText = @"SELECT COUNT(*) FROM Jobs WHERE id = @jobId";
+            command.CommandText = @"SELECT COUNT(*) FROM Jobs WHERE id = :jobId";
             command.Parameters.AddWithValue("@jobId", jobId);
             
             long id = (long) command.ExecuteScalar();
