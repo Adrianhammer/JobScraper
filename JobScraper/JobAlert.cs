@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace JobScraper;
 
+//Later changes:
+//Recipient number needs to be fetched from DB for currently logged in user
 public class JobAlert
 {
     private readonly IConfiguration _configuration;
@@ -18,7 +20,6 @@ public class JobAlert
         var accountSid = _configuration["SmsSettings:AccountSID"];
         var authToken = _configuration["SmsSettings:AuthToken"];
         TwilioClient.Init(accountSid, authToken);
-
     }
 
     public async Task SendNewJobAlert(List<JobResponseModels.Datum> jobsToNotifyUser)

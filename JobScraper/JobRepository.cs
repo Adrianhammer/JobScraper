@@ -52,7 +52,8 @@ public class JobRepository : IDisposable
                 PublishedDate = reader.GetString(reader.GetOrdinal("published_date")),
                 ApplyWithinDate = reader.GetString(reader.GetOrdinal("application_deadline")),
                 Workplace = reader.GetString(reader.GetOrdinal("workplace")),
-                OpenAdvertUrl = reader.GetString(reader.GetOrdinal("open_advert_url"))
+                OpenAdvertUrl = reader.GetString(reader.GetOrdinal("open_advert_url")),
+                TenantId = reader.GetString(reader.GetOrdinal("company_source_id"))
             };
             allStoredJobs.Add(job);
         }
@@ -66,8 +67,8 @@ public class JobRepository : IDisposable
             using var command = _pgConn.CreateCommand();
             
             command.CommandText = @"
-            INSERT INTO Jobs (id, company_name, heading, job_position,  published_date, application_deadline, workplace, open_advert_url)
-            VALUES (:id, :company_name, :heading, :job_position, :published_date, :application_deadline, :workplace, :open_advert_url);";
+            INSERT INTO Jobs (id, company_name, heading, job_position,  published_date, application_deadline, workplace, open_advert_url, company_source_id)
+            VALUES (:id, :company_name, :heading, :job_position, :published_date, :application_deadline, :workplace, :open_advert_url, :company_source_id);";
             
             command.Parameters.AddWithValue("id", job.Id);
             command.Parameters.AddWithValue("company_name", job.CompanyName);
@@ -77,6 +78,7 @@ public class JobRepository : IDisposable
             command.Parameters.AddWithValue("application_deadline", job.ApplyWithinDate);
             command.Parameters.AddWithValue("workplace", job.Workplace);
             command.Parameters.AddWithValue("open_advert_url", job.OpenAdvertUrl);
+            command.Parameters.AddWithValue("company_source_id", job.TenantId);
             
             command.ExecuteNonQuery();
         }
