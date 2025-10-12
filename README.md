@@ -81,14 +81,6 @@ The Jobs table in jobscraper.db is designed to store key details for each job po
 | `workplace`         | `TEXT`    | `NOT NULL`             | Location or primary workplace of the job.     |
 | `open_advert_url`   | `TEXT`    | `NOT NULL`             | Direct URL to the job advertisement.          |
 
-# 🗺️ Project Roadmap
-
-- Implement logic for checking existing jobs in the database to prevent duplicates.
-- Add logic to identify and update changed job postings (e.g., updated deadlines, new details).
-- Develop a scheduling mechanism (e.g., using System.Timers.Timer or a background service) for automatic, periodic job fetching.
-- Explore advanced comparison strategies for robust state matching.
-- Implement notification system for new or updated jobs.
-
 # 📄 License
 
 Distributed under the MIT License. See ```LICENSE``` for more information.
