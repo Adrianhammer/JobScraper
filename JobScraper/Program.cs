@@ -23,6 +23,27 @@ namespace jobscraper
                 .AddEnvironmentVariables()
                 .Build();
 
+            // Suggested AWS Lambda env vars (set in Lambda configuration):
+            // - ConnectionStrings__DefaultConnection
+            // - SmsSettings__AccountSID
+            // - SmsSettings__AuthToken
+            // - SmsSettings__RecipientNumber
+            // - SmsSettings__SenderNumber
+
+            var requiredKeys = new[]
+            {
+                "ConnectionStrings:DefaultConnection",
+                "SmsSettings:AccountSID",
+                "SmsSettings:AuthToken",
+                "SmsSettings:RecipientNumber",
+                "SmsSettings:SenderNumber"
+            };
+            foreach (var key in requiredKeys)
+            {
+                if (string.IsNullOrWhiteSpace(configuration[key]))
+                    throw new InvalidOperationException($"Missing config: {key}");
+            }
+
             var alert = new JobAlert(configuration);
 
             using var jobrepo = new JobRepository(configuration);

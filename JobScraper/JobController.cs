@@ -9,15 +9,15 @@ namespace JobScraper;
 
 public class JobController
 {
+    private static readonly HttpClient HttpClient = new HttpClient();
+    // Reuse HttpClient for Lambda warm starts to avoid socket exhaustion.
+
     public static async Task<List<JobResponseModels.Datum>> RunJobFetch()
     {
-        string docPath = "/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper/json";
         var url = "https://candidate.webcruiter.com/api/odvert/companysearch/5864";
         // payload the site needs to process job postings
         string requestPayload = "{Take: 20, skip: 0, page: 1, pageSize: 20, sort: [{field: '1', dir: 'desc'}]}";
         List<JobResponseModels.Datum> newlyScrapedJobs = new List<JobResponseModels.Datum>();
-
-        using var httpClient = new HttpClient();
 
         var content = new StringContent(
             requestPayload,
@@ -25,7 +25,7 @@ public class JobController
             "application/json"
         );
 
-        var response = await httpClient.PostAsync(url, content);
+        var response = await HttpClient.PostAsync(url, content);
 
         response.EnsureSuccessStatusCode();
 
