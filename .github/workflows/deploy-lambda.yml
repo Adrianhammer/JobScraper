@@ -1,0 +1,51 @@
+name: Deploy to AWS Lambda
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  id-token: write   # This is required for OIDC authentication
+  contents: read    # This is required to checkout the repository
+  
+env:
+  AWS_REGION: eu-north-1
+  LAMBDA_FUNCTION_NAME: JobScraper
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+          # The role-to-assume should be the ARN of the IAM role you created for GitHub Actions OIDC
+          
+      - name: Install Lambda tools
+        run: dotnet tool install -g Amazon.Lambda.Tools
+        
+      - name: Package Lambda 
+        run: |
+          dotnet lambda package \
+          --project-location JobScraper \
+          --configuration Release \
+          --framework net10.0 \
+          --output-package bin/Release/net10.0/JobScraper.zip
+          
+      - name: Deploy Lambda
+        run: |
+          aws lambda update-function-code \
+          --function-name $LAMBDA_FUNCTION_NAME \
+          --zip-file fileb://bin/Release/net10.0/JobScraper.zip
