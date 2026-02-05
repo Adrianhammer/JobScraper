@@ -9,7 +9,7 @@
 
 # 🚀 Overview 
 
-JobScraper is a powerful and efficient C# application designed to automate the process of fetching job postings from specific online sources *(currently scoped in on Innovasjon Norge which are using webcruiter)*. It deserializes JSON data, extracts key job details, and intelligently stores them in a PostgreSQL database.
+JobScraper is a C# application that automates fetching job postings from specific online sources *(currently scoped to Innovasjon Norge via Webcruiter)*. It deserializes JSON data, extracts key job details, and stores them in a Supabase-hosted PostgreSQL database.
 
 **Please note: This project is currently under active development, and more exciting features are planned!**
 
@@ -22,7 +22,7 @@ JobScraper is a powerful and efficient C# application designed to automate the p
 	- Detecting new job postings.
 	- Identifying updates to existing job postings.
 	- Tracking job application deadlines.
-- Runs at 12:00 every day to check for new postings (This will be tweaked)
+- Runs on a schedule (currently daily) to check for new postings.
 
 
 # 🛠️ Technologies Used
@@ -33,7 +33,7 @@ JobScraper is a powerful and efficient C# application designed to automate the p
 
 ### Prerequisites
 
-- .NET SDK 9.0 or higher installed.
+- .NET SDK 10.0 or higher installed.
 
 ### Installation
 
@@ -49,26 +49,25 @@ cd JobScraper
 dotnet restore
 ```
 
-This will install Microsoft.Data.Sqlite and other necessary dependencies.
+This will install the required dependencies.
 
 ### Running the Application
 
 
-To run the scraper and populate your SQLite database:
+To run the scraper locally:
 
 ```bash
 dotnet run
 ```
 Upon execution, the application will:
 
-1. Initialize or open the jobscraper.db SQLite database file in the project's output directory (bin/Debug/net9.0/).
-2. Create the Jobs table if it doesn't already exist.
-3. Fetch job data from the configured web endpoint.
-4. Insert the newly scraped jobs into the Jobs table.
+1. Connect to Supabase PostgreSQL.
+2. Fetch job data from the configured web endpoint.
+3. Insert any new jobs into the Jobs table.
 
 # 📊 Database Structure
 
-The Jobs table in jobscraper.db is designed to store key details for each job posting:
+The `Jobs` table in Supabase is designed to store key details for each job posting:
 
 | Column Name         | Data Type | Constraints            | Description                                   |
 | :------------------ | :-------- | :--------------------- | :-------------------------------------------- |
@@ -80,6 +79,22 @@ The Jobs table in jobscraper.db is designed to store key details for each job po
 | `application_deadline`| `TEXT`    | `NOT NULL`             | The simplified "Apply Within" date string (e.g., "31.07.2025"). |
 | `workplace`         | `TEXT`    | `NOT NULL`             | Location or primary workplace of the job.     |
 | `open_advert_url`   | `TEXT`    | `NOT NULL`             | Direct URL to the job advertisement.          |
+| `company_source_id` | `TEXT`    | `NOT NULL`             | Tenant/company source ID.                     |
+
+# ☁️ AWS Lambda Deploy (OIDC)
+
+This repo uses GitHub Actions with OIDC to deploy a zip package to AWS Lambda. The flow is:
+
+```mermaid
+flowchart LR
+  A["GitHub Actions (job)"] --> B["OIDC token from GitHub"]
+  B --> C["AWS STS: AssumeRoleWithWebIdentity"]
+  C --> D["IAM Role: GitHubActions-Lambda-Deploy"]
+  D --> E["Temporary AWS credentials"]
+  E --> F["Lambda UpdateFunctionCode"]
+```
+
+See `/Users/adrianhammer/AA/projects/desktop/JobScraper/LAMBDA_DEPLOY.md` for the deployment checklist and `/Users/adrianhammer/AA/projects/desktop/JobScraper/LAMBDA_CICD.md` for CI/CD options.
 
 # 📄 License
 
