@@ -40,7 +40,7 @@ public class LambdaEntryPoint
         using var jobrepo = new JobRepository(configuration);
         Console.WriteLine("Database and table setup complete. Starting job fetch...");
 
-        List<JobResponseModels.Datum> scrapedJobs = await JobController.RunJobFetch();
+        List<JobResponseModels.Datum> scrapedJobs = await JobFetcher.RunJobFetch();
 
         var newlyInsertedJobs = jobrepo.UpsertJob(scrapedJobs);
         await alert.SendNewJobAlert(newlyInsertedJobs);

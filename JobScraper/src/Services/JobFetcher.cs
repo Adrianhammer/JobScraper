@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace JobScraper;
 
-public class JobController
+public class JobFetcher
 {
     private static readonly HttpClient HttpClient = new HttpClient();
     // Reuse HttpClient for Lambda warm starts to avoid socket exhaustion.

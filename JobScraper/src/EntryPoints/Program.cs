@@ -1,14 +1,7 @@
-﻿using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Text.Json;
-using JobScraper;
+﻿using JobScraper;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
-namespace jobscraper
+namespace JobScraper
 {
     public class Program
     {
@@ -49,7 +42,7 @@ namespace jobscraper
             using var jobrepo = new JobRepository(configuration);
             Console.WriteLine("Database and table setup complete. Starting job fetch...");
 
-            List<JobResponseModels.Datum> scrapedJobs = await JobController.RunJobFetch();
+            List<JobResponseModels.Datum> scrapedJobs = await JobFetcher.RunJobFetch();
 
             var newlyInsertedJobs = jobrepo.UpsertJob(scrapedJobs);
             await alert.SendNewJobAlert(newlyInsertedJobs);
