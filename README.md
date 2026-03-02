@@ -90,4 +90,4 @@ See `/Users/adrianhammer/AA/projects/desktop/JobScraper/LAMBDA_DEPLOY.md` for AW
 
 Distributed under the MIT License. See ```LICENSE``` for more information.
 
-test branch ruleset - 3
+test branch ruleset - 4
