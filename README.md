@@ -59,16 +59,6 @@ Upon execution, the application will:
 2. Fetch job data from the configured web endpoint
 3. Insert any new jobs into the Jobs table
 
-# 🧱 Repo Structure
-
-Core projects:
-- `/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper` (core logic)
-- `/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper.Functions` (Azure Functions wrapper)
-
-Deployment docs:
-- `/Users/adrianhammer/AA/projects/desktop/JobScraper/LAMBDA_DEPLOY.md`
-- `/Users/adrianhammer/AA/projects/desktop/JobScraper/LAMBDA_CICD.md`
-
 # ☁️ AWS Lambda Deploy (OIDC)
 
 GitHub Actions uses OIDC to deploy a zip package to AWS Lambda:
