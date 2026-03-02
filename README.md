@@ -13,13 +13,6 @@ JobScraper automates fetching job postings from specific online sources (current
 
 **Please note: This project is currently under active development, and more exciting features are planned!**
 
-## ✨ Features
-
-- Targeted web scraping from supported endpoints
-- Structured parsing of job data into strong types
-- Change detection and notification delivery via Twilio
-- Daily scheduling on AWS Lambda or Azure Functions
-
 # 🛠️ Tech Stack
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=flat&logo=dotnet&logoColor=white)
@@ -65,16 +58,6 @@ Upon execution, the application will:
 1. Connect to Supabase PostgreSQL
 2. Fetch job data from the configured web endpoint
 3. Insert any new jobs into the Jobs table
-
-# 🧱 Repo Structure
-
-Core projects:
-- `/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper` (core logic)
-- `/Users/adrianhammer/AA/projects/desktop/JobScraper/JobScraper.Functions` (Azure Functions wrapper)
-
-Deployment docs:
-- `/Users/adrianhammer/AA/projects/desktop/JobScraper/LAMBDA_DEPLOY.md`
-- `/Users/adrianhammer/AA/projects/desktop/JobScraper/LAMBDA_CICD.md`
 
 # ☁️ AWS Lambda Deploy (OIDC)
 
