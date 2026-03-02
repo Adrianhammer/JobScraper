@@ -13,13 +13,6 @@ JobScraper automates fetching job postings from specific online sources (current
 
 **Please note: This project is currently under active development, and more exciting features are planned!**
 
-## ✨ Features
-
-- Targeted web scraping from supported endpoints
-- Structured parsing of job data into strong types
-- Change detection and notification delivery via Twilio
-- Daily scheduling on AWS Lambda or Azure Functions
-
 # 🛠️ Tech Stack
 
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=flat&logo=dotnet&logoColor=white)
